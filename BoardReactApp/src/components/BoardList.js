@@ -75,12 +75,8 @@ const BoardList = () => {
         method: 'DELETE',
       });
       if(response.ok){
-        // 성공적으로 삭제된 경우
-        // 상태를 업데이트하거나 필요한 작업을 수행합니다.
         setComments(prevComments => prevComments.filter(comment => comment._id !== commentId));
       } else {
-        // 삭제 요청이 실패한 경우
-        // 오류 처리를 수행합니다.
         console.error('Failed to delete comment');
       }
     } catch(error) {

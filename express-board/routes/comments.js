@@ -40,6 +40,20 @@ router.delete("/:id", function(req, res, next) {
         .catch(err => next(err));
 });
 
+//수정
+router.put("/:id", function(req, res, next) {       //보드 id에 해당하는 내용을 수정해달라고 요청하기
+    Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        .then(board => {
+            if (!board) {
+                const error = new Error('Board not found');
+                error.status = 404;
+                throw error;
+            }
+            res.json(board);
+        })
+        .catch(err => next(err));
+});
+
 // router.get("/:id/comments", function(req, res, next) {
 //     const boardId = req.params.id;
 //     Board.findById(boardId)
