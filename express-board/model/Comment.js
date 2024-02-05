@@ -6,18 +6,18 @@ mongoose.connect(MONGO_HOST,{
     w: 'majority',
 }).then(resp=>{
     // console.log(resp);
-    console.log("DB 연결 성공");
+    console.log("DB 연결 성공2");
 });
 
-
-const boardSchema = new mongoose.Schema({
+const commentSchema = new mongoose.Schema ({
+    id: { type: mongoose.Types.ObjectId, ref:'Board'},
     title: { type: String, required: true },
     content: { type: String, required: true },
     author: String,
-    createdAt: { type: Date, default: Date.now }   
+    createdAt: { type: Date, default: Date.now }
 });
 
 
-const Board = mongoose.model("Board", boardSchema); //모델 생성
+const Comment = mongoose.model("Comment", commentSchema); //모델 생성
 
-module.exports = Board;
+module.exports = Comment;

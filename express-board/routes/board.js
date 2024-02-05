@@ -44,12 +44,22 @@ router.get("/:id", function(req, res, next) {
 //     }
 // });
 //추가
-router.post("/", function(req,res,next){
-    console.log(req.body);
-    Board.create(req.body)
-    .then(boards => res.json(boards))
-    .catch(err=> next(err))
-});
+
+
+
+
+router.post('/', (req, res, next)=>{
+    Board.create({
+        title: req.body.title,
+        content: req.body.content,
+        author: req.body.author || 'Anonymous'
+    }).then(result=>{
+        console.log(result)
+        res.status(201).json(result);
+    }).catch(err=>{
+        next(err)
+    })
+})
 //삭제
 router.delete("/:id", function(req, res, next) {
     Board.findByIdAndDelete(req.params.id)
@@ -65,7 +75,7 @@ router.delete("/:id", function(req, res, next) {
 });
 
 //수정
-router.put("/:id", function(req, res, next) {
+router.put("/:id", function(req, res, next) {       //보드 id에 해당하는 내용을 수정해달라고 요청하기
     Board.findByIdAndUpdate(req.params.id, req.body, { new: true })
         .then(board => {
             if (!board) {
@@ -77,6 +87,7 @@ router.put("/:id", function(req, res, next) {
         })
         .catch(err => next(err));
 });
+
 
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import BoardList from '../BorderReactApp/components/BoardList';
+import BoardList from './components/BoardList.js';
 
 
 function App() {
