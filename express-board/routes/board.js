@@ -3,6 +3,8 @@ const router = express.Router();
 
 let Board = require("../model/Board");
 
+
+
 /*
     + /board GET - 게시글 리스트 조회.
     + /board POST - 게시글 자원을 생성해 줘
@@ -22,30 +24,18 @@ router.get("/", function(req, res, next) {
     .catch(err=> next(err))
 });
 //특정 id 보드 조회
-router.get("/:id", function(req, res, next) {
-    Board.findById(req.params.id)
-        .then(boards => {
-            if (!boards) {
-                const error = new Error('Board not found');
-                error.status = 404;
-                throw error;
-            }
-            res.json(boards);
-        })
-        .catch(err => next(err));
-});
-
-// router.get('/', async (req, res, next) => {
-//     try {
-//         const boards = await Board.create(req.body);
-//         res.send(board);
-//     } catch (err) {
-//         next(err);
-//     }
-// });
-//추가
-
-
+router.get("/:boardId", (req, res, next) => {
+    Board.findById(req.params.boardId).then(board => {
+        if(!req.session.pathTitle){
+            req.session.pathTitle = []
+        }
+        req.session.pathTitle.push(board.title);
+        // console.log(req.session);
+        res.json(board);
+    }).catch(err => {
+        res.send(err);
+    })
+})
 
 
 router.post('/', (req, res, next)=>{
