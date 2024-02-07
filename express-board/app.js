@@ -60,6 +60,8 @@ app.use('/board', boardRouter);   //나중에 내가 board 필요할 때 그대�
 const commentRouter = require('./routes/comments');
 app.use('/comments', commentRouter); 
 
+
+
 app.get('/sample', (req, res) => {
   res.send("Sample");
 })
