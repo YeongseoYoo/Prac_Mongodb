@@ -6,9 +6,13 @@ var logger = require('morgan');
 const session = require('express-session');
 const cors = require('cors');
 const app = express();
-
+const connectToMongo = require('./utils/mongoose');
 // view engine setup
 
+app.use((cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+})));
 
 // session 미들웨어 설정
 app.use(
@@ -41,7 +45,6 @@ var birdsRouter = require('./routes/birds');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(cors());
 
 app.use(logger('dev'));
 app.use(express.json());

@@ -1,23 +1,18 @@
-// const mongoose = require("mongoose");
-// const MONGO_HOST = "mongodb+srv://admin:admin1234@yscluster.y1tyjoy.mongodb.net/boards";
-// //?retryWrites=true&w=majority
-// mongoose.connect(MONGO_HOST,{
-//     retryWrites: true,
-//     w: 'majority',
-// }).then(resp=>{
-//     // console.log(resp);
-//     console.log("DB 연결 성공");
-// });
+const mongoose = require("mongoose");
+const User = require("./User"); // User 모델을 불러옵니다.
 
+const boardSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // User 모델을 참조합니다.
+        required: true
+    },
+    createdAt: { type: Date, default: Date.now }, 
+    updatedAt: { type: Date, default: Date.now }
+});
 
-// const boardSchema = new mongoose.Schema({
-//     title: { type: String, required: true },
-//     content: { type: String, required: true },
-//     author: String,
-//     createdAt: { type: Date, default: Date.now }   
-// });
+const Board = mongoose.model("Board", boardSchema);
 
-
-// const Board = mongoose.model("Board", boardSchema); //모델 생성
-
-// module.exports = Board;
+module.exports = Board;

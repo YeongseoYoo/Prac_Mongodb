@@ -6,7 +6,7 @@ function createToken(visibleUser, maxAge = 60 * 60 * 24 * 3) {
     });
 }
 
-function verifyToken(_token){
+function verifyToken(_token){ //토큰 검증 
     if (!_token) {
         return null;
     }
@@ -14,7 +14,7 @@ function verifyToken(_token){
     return verifiedToken;
 }
 
-model.exports = {
+module.exports = {
     createToken,
     verifyToken,
 }

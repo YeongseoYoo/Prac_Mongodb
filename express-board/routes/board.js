@@ -2,7 +2,31 @@ const express = require('express');
 const router = express.Router();
 
 let Board = require("../model/Board");
+let User = require("../model/User");
+const {createToken, verifyToken} = require("../utils/auth")
 
+
+async function authenticate(req, res, next) {
+    let token = req.cookies.authToken;
+    let headerToken = req.headers.authorization;
+    console.log(token);
+    console.log(headerToken);
+    if (!token && headerToken) {
+      token = headerToken.split(" ")[1];
+    }
+  
+    const user = verifyToken(token);
+    req.user = user;
+  
+    if (!user) {
+      const error = new Error("Authorization Failed");
+      error.status = 400;
+  
+      next(error);
+    }
+    next();
+  }
+  
 
 
 /*
@@ -18,13 +42,16 @@ let Board = require("../model/Board");
 */
 
 //모든 보드 조회
-router.get("/", function(req, res, next) {
+
+router.get("/", authenticate, function(req, res, next) {
     Board.find()
-    .then(boards => res.json(boards))
-    .catch(err=> next(err))
+        // .populate('author', 'nickname')
+        .then(boards => res.json(boards))
+        .catch(err => next(err));
 });
+
 //특정 id 보드 조회
-router.get("/:boardId", (req, res, next) => {
+router.get("/:boardId",authenticate, (req, res, next) => {
     Board.findById(req.params.boardId).then(board => {
         if(!req.session.pathTitle){
             req.session.pathTitle = []
@@ -38,7 +65,7 @@ router.get("/:boardId", (req, res, next) => {
 })
 
 
-router.post('/', (req, res, next)=>{
+router.post('/', authenticate,(req, res, next)=>{
     Board.create({
         title: req.body.title,
         content: req.body.content,
@@ -51,7 +78,7 @@ router.post('/', (req, res, next)=>{
     })
 })
 //삭제
-router.delete("/:id", function(req, res, next) {
+router.delete("/:id",authenticate, function(req, res, next) {
     Board.findByIdAndDelete(req.params.id)
         .then(board => {
             if (!board) {
@@ -65,7 +92,7 @@ router.delete("/:id", function(req, res, next) {
 });
 
 //수정
-router.put("/:id", function(req, res, next) {       //보드 id에 해당하는 내용을 수정해달라고 요청하기
+router.put("/:id", authenticate,function(req, res, next) {       //보드 id에 해당하는 내용을 수정해달라고 요청하기
     Board.findByIdAndUpdate(req.params.id, req.body, { new: true })
         .then(board => {
             if (!board) {
