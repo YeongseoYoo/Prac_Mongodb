@@ -1,18 +1,20 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const session = require('express-session');
-const cors = require('cors');
+var createError = require("http-errors");
+var express = require("express");
+var path = require("path");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
+const session = require("express-session");
+const cors = require("cors");
 const app = express();
-const connectToMongo = require('./utils/mongoose');
+const connectToMongo = require("./utils/mongoose");
 // view engine setup
 
-app.use((cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-})));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 // session 미들웨어 설정
 app.use(
@@ -37,57 +39,51 @@ app.use((req, res, next) => {
   next(); // Call next to move to the next middleware or route handler
 });
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var birdsRouter = require('./routes/birds');
+var usersRouter = require("./routes/users");
+var birdsRouter = require("./routes/birds");
 
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
+var wadizRouter = require("./routes/wadiz");
+app.use("/api/", wadizRouter);
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/birds', birdsRouter);
+app.use("/users", usersRouter);
+app.use("/birds", birdsRouter);
 
-const boardRouter = require('./routes/board');
-app.use('/board', boardRouter);   //나중에 내가 board 필요할 때 그대로 독립적으로 구현할 수 있게 만든 것임: 모듈화
+const boardRouter = require("./routes/board");
+app.use("/api/board", boardRouter); //나중에 내가 board 필요할 때 그대로 독립적으로 구현할 수 있게 만든 것임: 모듈화
 
-const commentRouter = require('./routes/comments');
-app.use('/comments', commentRouter); 
+const commentRouter = require("./routes/comments");
+app.use("/api/comments", commentRouter);
 
-
-
-app.get('/sample', (req, res) => {
+app.get("/sample", (req, res) => {
   res.send("Sample");
-})
-app.post('/sample', (req,res) => {
+});
+app.post("/sample", (req, res) => {
   res.send("Create First POST router");
-})
-
+});
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
   res.status(err.status || 500);
   res.json(res.locals);
 });
-
 
 module.exports = app;
