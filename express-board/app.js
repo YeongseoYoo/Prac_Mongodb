@@ -51,8 +51,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-var wadizRouter = require("./routes/wadiz");
-app.use("/api/", wadizRouter);
+// var wadizRouter = require("./routes/wadiz");
+// app.use("/api/", wadizRouter);
 
 app.use("/users", usersRouter);
 app.use("/birds", birdsRouter);
